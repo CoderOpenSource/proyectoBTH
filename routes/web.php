@@ -57,6 +57,6 @@ Route::delete('/actas/{acta}', [ActaController::class, 'destroy'])->name('actas.
 
 Route::get('/actas/{acta}/comportamientos', [ComportamientoController::class, 'index'])->name('comportamientos.index');
 Route::post('/actas/{acta}/comportamientos', [ComportamientoController::class, 'store'])->name('comportamientos.store');
-Route::get('/actas/{acta}/comportamientos/{estudiante_id}/edit', [ComportamientoController::class, 'edit'])->name('comportamientos.edit');
-Route::put('/actas/{acta}/comportamientos/{estudiante_id}', [ComportamientoController::class, 'update'])->name('comportamientos.update');
-Route::delete('/actas/{acta}/comportamientos/{estudiante_id}', [ComportamientoController::class, 'destroy'])->name('comportamientos.destroy');
+Route::get('/actas/{acta}/comportamientos/{comportamiento_id}/edit', [ComportamientoController::class, 'edit'])->name('comportamientos.edit');
+Route::put('/actas/{acta}/comportamientos/{comportamiento_id}', [ComportamientoController::class, 'update'])->name('comportamientos.update');
+Route::delete('/actas/{acta}/comportamientos/{comportamiento_id}', [ComportamientoController::class, 'destroy'])->name('comportamientos.destroy');

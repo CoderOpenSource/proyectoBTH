@@ -17,6 +17,25 @@ class ComportamientoController extends Controller
             return redirect('/login')->withErrors(['No tienes acceso a esta área.']);
         }
 
+        // Definir lista de faltas
+        $faltas = [
+            'A) No trabajó en clases',
+            'B) No presentó tareas',
+            'C) No trajo material escolar',
+            'D) No trajo agenda',
+            'E) No participó en clases',
+            'F) Llegó tarde a clases',
+            'G) No dio la evaluación',
+            'H) Faltó sin licencia',
+            'I) Faltó con licencia',
+            'J) Usó el celular en horas de clase (sin autorización)',
+            'K) Indisciplina en el aula',
+            'L) Molestó a sus compañer@s',
+            'M) Faltó el respeto a sus compañeros',
+            'N) Faltó el respeto a sus profesores',
+            'O) Otros'
+        ];
+
         // Obtener los estudiantes que pertenecen al curso del acta
         $estudiantes = Estudiante::where('curso_id', $acta->curso_id)->get();
 
@@ -43,9 +62,8 @@ class ComportamientoController extends Controller
         // Obtener los comportamientos filtrados
         $comportamientos = $query->get();
 
-        return view('admin.actas.comportamientos', compact('acta', 'comportamientos', 'estudiantes'));
+        return view('admin.actas.comportamientos', compact('acta', 'comportamientos', 'estudiantes', 'faltas'));
     }
-
 
     // Crear un nuevo comportamiento
     public function store(Request $request, Acta $acta)
@@ -87,10 +105,10 @@ class ComportamientoController extends Controller
     }
 
     // Editar un comportamiento
-    public function edit(Acta $acta, $estudiante_id)
+    public function edit(Acta $acta, $comportamiento_id)
     {
-        // Buscar el comportamiento usando acta_id y estudiante_id
-        $comportamiento = Comportamiento::where('acta_id', $acta->id)->where('estudiante_id', $estudiante_id)->firstOrFail();
+        // Buscar el comportamiento usando su 'id'
+        $comportamiento = Comportamiento::where('acta_id', $acta->id)->where('id', $comportamiento_id)->firstOrFail();
 
         // Obtener el ID del profesor desde la sesión
         $profesorId = session('usuario_id');
@@ -112,7 +130,7 @@ class ComportamientoController extends Controller
     }
 
     // Actualizar un comportamiento
-    public function update(Request $request, Acta $acta, $estudiante_id)
+    public function update(Request $request, Acta $acta, $comportamiento_id)
     {
         $request->validate([
             'descripcion' => 'required|string',
@@ -120,8 +138,8 @@ class ComportamientoController extends Controller
             'estudiante_id' => 'required|exists:estudiantes,id',
         ]);
 
-        // Buscar el comportamiento usando acta_id y estudiante_id
-        $comportamiento = Comportamiento::where('acta_id', $acta->id)->where('estudiante_id', $estudiante_id)->firstOrFail();
+        // Buscar el comportamiento usando su 'id'
+        $comportamiento = Comportamiento::where('acta_id', $acta->id)->where('id', $comportamiento_id)->firstOrFail();
 
         // Obtener el ID del profesor desde la sesión
         $profesorId = session('usuario_id');
@@ -147,10 +165,10 @@ class ComportamientoController extends Controller
     }
 
     // Eliminar un comportamiento
-    public function destroy(Acta $acta, $estudiante_id)
+    public function destroy(Acta $acta, $comportamiento_id)
     {
-        // Buscar el comportamiento usando acta_id y estudiante_id
-        $comportamiento = Comportamiento::where('acta_id', $acta->id)->where('estudiante_id', $estudiante_id)->firstOrFail();
+        // Buscar el comportamiento usando su 'id'
+        $comportamiento = Comportamiento::where('acta_id', $acta->id)->where('id', $comportamiento_id)->firstOrFail();
 
         // Obtener el ID del profesor desde la sesión
         $profesorId = session('usuario_id');

@@ -12,10 +12,10 @@
             <a href="/profesores" class="nav-link">Gestionar Profesores</a>
         </li>
     @endif
-    @if(session('rol') === 'administrador' || session('rol' === 'profesor'))
-    <li class="nav-item">
-        <a href="/cursos" class="nav-link">Gestionar Cursos</a>
-    </li>
+    @if(session('rol') === 'administrador' || session('rol') === 'profesor')
+        <li class="nav-item">
+            <a href="/cursos" class="nav-link">Gestionar Cursos</a>
+        </li>
     @endif
     <li class="nav-item">
         <a href="/actas" class="nav-link">Gestionar Actas</a>

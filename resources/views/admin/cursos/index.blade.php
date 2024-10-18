@@ -59,10 +59,10 @@
                     <td>
                         <!-- Botón para ver estudiantes -->
                         <a href="{{ route('cursos.estudiantes', $curso->id) }}" class="btn btn-info btn-sm">Ver Estudiantes</a>
-
+                        @if(session('rol') === 'administrador')
                         <!-- Botón para editar curso -->
                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal-{{ $curso->id }}">Editar</button>
-
+                        @endif
                         <!-- Formulario para eliminar curso -->
                         @if(session()->has('admin'))
                             <form action="{{ route('cursos.destroy', $curso->id) }}" method="POST" style="display:inline;">

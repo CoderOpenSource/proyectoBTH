@@ -9,11 +9,11 @@ class Comportamiento extends Model
     // Definir la tabla, ya que no estamos utilizando el nombre por defecto (plural)
     protected $table = 'comportamientos';
 
-    // Deshabilitar la auto-incrementación de la clave primaria
-    public $incrementing = false;
+    // No necesitamos deshabilitar la auto-incrementación, ya que tenemos la columna 'id'
+    public $incrementing = true;
 
-    // Laravel no soporta claves primarias compuestas directamente, por lo que no podemos usar el primaryKey como array
-    protected $primaryKey = null;
+    // No es necesario manejar claves compuestas, ahora 'id' es la clave primaria
+    protected $primaryKey = 'id';
 
     // Permitir las asignaciones masivas para estos campos
     protected $fillable = ['descripcion', 'fecha', 'tipo', 'acta_id', 'estudiante_id', 'profesor'];
@@ -30,4 +30,3 @@ class Comportamiento extends Model
         return $this->belongsTo(Acta::class, 'acta_id');
     }
 }
-

@@ -11,13 +11,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('comportamientos', function (Blueprint $table) {
+            $table->id(); // Añadimos una columna 'id' autoincremental
             $table->text('descripcion');
             $table->date('fecha');
             $table->string('tipo'); // Por ejemplo: positivo o negativo
             $table->string('profesor'); // Aquí almacenaremos el nombre y la materia del profesor
             $table->foreignId('acta_id')->constrained()->onDelete('cascade'); // Relación con acta
             $table->foreignId('estudiante_id')->constrained()->onDelete('cascade'); // Relación con estudiante
-            $table->primary(['acta_id', 'estudiante_id']); // Clave primaria compuesta
             $table->timestamps();
         });
     }

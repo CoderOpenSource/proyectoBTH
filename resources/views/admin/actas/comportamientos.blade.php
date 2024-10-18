@@ -12,10 +12,10 @@
             <a href="/profesores" class="nav-link">Gestionar Profesores</a>
         </li>
     @endif
-    @if(session('rol') === 'profesor' || session('rol' === 'administrador'))
-    <li class="nav-item">
-        <a href="/cursos" class="nav-link">Gestionar Cursos</a>
-    </li>
+    @if(session('rol') === 'profesor' || session('rol') === 'administrador')
+        <li class="nav-item">
+            <a href="/cursos" class="nav-link">Gestionar Cursos</a>
+        </li>
     @endif
 
     <li class="nav-item">
@@ -59,60 +59,58 @@
             </div>
         </form>
 
+        @if(session('rol') === 'profesor')
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createModal">Añadir Comportamiento</button>
+        @endif
 
-    @if(session('rol') === 'profesor')
-                <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createModal">Añadir Comportamiento</button>
-            @endif
+        <!-- Mostrar mensajes de éxito -->
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
 
-            <!-- Mostrar mensajes de éxito -->
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            <!-- Tabla de Comportamientos -->
-            <table id="tabla-comportamientos" class="table table-striped">
-                <thead class="table-dark">
-                <tr>
-                    <th>Descripción</th>
-                    <th>Fecha</th>
-                    <th>Tipo</th>
-                    <th>Estudiante</th>
-                    <th>Profesor</th> <!-- Nueva columna -->
-                    @if(session('rol') === 'profesor')
+        <!-- Tabla de Comportamientos -->
+        <table id="tabla-comportamientos" class="table table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Estudiante</th>
+                <th>Profesor</th>
+                @if(session('rol') === 'profesor')
                     <th>Acciones</th>
-                    @endif
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($comportamientos as $comportamiento)
-                    <tr>
-                        <td>{{ $comportamiento->descripcion }}</td>
-                        <td>{{ $comportamiento->fecha }}</td>
-                        <td>{{ $comportamiento->tipo }}</td>
-                        <td>{{ $comportamiento->estudiante->nombre }}</td>
-                        <td>{{ $comportamiento->profesor }}</td> <!-- Mostrar el campo profesor -->
-                        @if(session('rol') === 'profesor')
+                @endif
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($comportamientos as $comportamiento)
+                <tr>
+                    <td>{{ $comportamiento->descripcion }}</td>
+                    <td>{{ $comportamiento->fecha }}</td>
+                    <td>{{ $comportamiento->tipo }}</td>
+                    <td>{{ $comportamiento->estudiante->nombre }}</td>
+                    <td>{{ $comportamiento->profesor }}</td> <!-- Mostrar el campo profesor -->
+                    @if(session('rol') === 'profesor')
                         <td>
                             <!-- Botón para editar comportamiento -->
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal-{{ $comportamiento->estudiante_id }}">Editar</button>
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal-{{ $comportamiento->id }}">Editar</button>
 
                             <!-- Formulario para eliminar comportamiento -->
-                            <form action="{{ route('comportamientos.destroy', [$acta->id, $comportamiento->estudiante_id]) }}" method="POST" style="display:inline;">
+                            <form action="{{ route('comportamientos.destroy', [$acta->id, $comportamiento->id]) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                             </form>
                         </td>
-                        @endif
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
-
+                    @endif
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    </div>
 
     <!-- Modal para Crear Comportamiento -->
     <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
@@ -126,8 +124,18 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+                            <label for="falta" class="form-label">Falta</label>
+                            <select class="form-select" id="falta" name="descripcion" required>
+                                @foreach($faltas as $falta)
+                                    <option value="{{ $falta }}">{{ $falta }}</option>
+                                @endforeach
+                                <option value="Otros">Otros</option> <!-- Agregamos la opción de "Otros" -->
+                            </select>
+                        </div>
+                        <!-- Campo oculto para ingresar una descripción personalizada -->
+                        <div class="mb-3" id="otrosDescripcion" style="display:none;">
+                            <label for="descripcion_personalizada" class="form-label">Descripción Personalizada</label>
+                            <textarea class="form-control" id="descripcion_personalizada" name="descripcion_personalizada"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="tipo" class="form-label">Tipo</label>
@@ -155,16 +163,28 @@
         </div>
     </div>
 
+    <!-- Script para mostrar el campo de texto si se selecciona "Otros" -->
+    <script>
+        document.getElementById('falta').addEventListener('change', function() {
+            const otrosDescripcion = document.getElementById('otrosDescripcion');
+            if (this.value === 'Otros') {
+                otrosDescripcion.style.display = 'block';
+            } else {
+                otrosDescripcion.style.display = 'none';
+            }
+        });
+    </script>
+
     <!-- Modales para Editar Comportamiento -->
     @foreach($comportamientos as $comportamiento)
-        <div class="modal fade" id="editModal-{{ $comportamiento->estudiante_id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editModal-{{ $comportamiento->id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title" id="editModalLabel">Editar Comportamiento</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('comportamientos.update', [$acta->id, $comportamiento->estudiante_id]) }}" method="POST">
+                    <form action="{{ route('comportamientos.update', [$acta->id, $comportamiento->id]) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
